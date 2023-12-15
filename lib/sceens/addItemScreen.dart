@@ -4,6 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lottie/lottie.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import 'dart:io';
@@ -12,7 +13,9 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pos_admin/constants/colors.dart';
 import 'package:pos_admin/sceens/allFoodScreen.dart';
+import 'package:pos_admin/screen.dart';
 import 'package:pos_admin/widgets/dropDown.dart';
+import 'package:pos_admin/widgets/myTextField.dart';
 import 'package:pos_admin/widgets/utils.dart';
 
 class AddItemScreen extends StatefulWidget {
@@ -184,14 +187,10 @@ class _AddItemScreenState extends State<AddItemScreen> {
                               width: MediaQuery.of(context).size.width * .6,
                               child: selectedIamge != null
                                   ? Image.file(selectedIamge!)
-                                  : Center(
-                                      child: Text(
-                                        'Select Food Image',
-                                        style: TextStyle(
-                                            color: black,
-                                            fontFamily: "tabfont",
-                                            fontSize: 15),
-                                      ),
+                                  : Lottie.asset(
+                                      "$lottiePath/food2.json",
+                                      fit: BoxFit.fitHeight,
+                                      frameRate: FrameRate(90),
                                     ),
                             ),
                             // Padding(
@@ -236,137 +235,21 @@ class _AddItemScreenState extends State<AddItemScreen> {
                           ],
                         ),
                       ),
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(left: 8, right: 8, top: 8),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Item Name*',
-                              style: TextStyle(
-                                fontSize: 10,
-                                color: black,
-                                fontFamily: "tabfont",
-                              ),
-                            ),
-                            TextField(
-                              style: TextStyle(
-                                  fontSize: 17,
-                                  color: black,
-                                  fontWeight: FontWeight.w500),
-                              controller: foodNameController,
-                              cursorColor: primaryColor,
-                              decoration: InputDecoration(
-                                // hintText: 'Enter Item Name',
-                                hintStyle:
-                                    TextStyle(fontWeight: FontWeight.w400),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(18),
-                                  borderSide:
-                                      const BorderSide(color: Colors.black54),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(25),
-                                  borderSide:
-                                      const BorderSide(color: primaryColor),
-                                ),
-                                // focusColor: primaryColor,
-                                // hoverColor: primaryColor,
-                              ),
-                            ),
-                          ],
-                        ),
+                      MyTextField(
+                        controller: foodNameController,
+                        hintText: 'Enter item name here',
+                        cstmLable: 'Item Name',
                       ),
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(left: 8, right: 8, top: 8),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Item Code*',
-                              style: TextStyle(
-                                fontSize: 10,
-                                color: black,
-                                fontFamily: "tabfont",
-                              ),
-                            ),
-                            TextField(
-                              keyboardType: TextInputType.phone,
-                              style: TextStyle(
-                                  fontSize: 17,
-                                  color: black,
-                                  fontWeight: FontWeight.w500),
-                              controller: foodCodeController,
-                              cursorColor: primaryColor,
-                              decoration: InputDecoration(
-                                // hintText: 'Enter Item Code',
-                                hintStyle:
-                                    TextStyle(fontWeight: FontWeight.w400),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(18),
-                                  borderSide:
-                                      const BorderSide(color: Colors.black54),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(25),
-                                  borderSide:
-                                      const BorderSide(color: primaryColor),
-                                ),
-                                focusColor: primaryColor,
-                                hoverColor: primaryColor,
-                              ),
-                            ),
-                          ],
-                        ),
+                      MyTextField(
+                        controller: foodCodeController,
+                        hintText: 'Enter item code here',
+                        cstmLable: 'Item Code',
+                        keyboardType: TextInputType.phone,
                       ),
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(left: 8, right: 8, top: 8),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Item Price*',
-                              style: TextStyle(
-                                fontSize: 10,
-                                color: black,
-                                fontFamily: "tabfont",
-                              ),
-                            ),
-                            TextField(
-                              keyboardType: TextInputType.phone,
-                              style: TextStyle(
-                                  fontSize: 17,
-                                  color: black,
-                                  fontWeight: FontWeight.w500),
-                              controller: foodPriceController,
-                              cursorColor: primaryColor,
-                              decoration: InputDecoration(
-                                // hintText: 'Enter Item Price',
-                                hintStyle:
-                                    TextStyle(fontWeight: FontWeight.w400),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(18),
-                                  borderSide:
-                                      const BorderSide(color: Colors.black54),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(25),
-                                  borderSide:
-                                      const BorderSide(color: primaryColor),
-                                ),
-                                focusColor: primaryColor,
-                                hoverColor: primaryColor,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      MyTextField(
+                          controller: foodPriceController,
+                          hintText: 'Enter item price here',
+                          cstmLable: "Item Price"),
                       Padding(
                         padding:
                             const EdgeInsets.only(left: 8, right: 8, top: 8),
@@ -617,14 +500,12 @@ class _AddItemScreenState extends State<AddItemScreen> {
       if (user != null) {
         final String uid = user.uid;
         String imagePath = await uploadImageToStorage(selectedIamge);
-        // Create a subcollection named "vehicles" inside the user's document
-        CollectionReference vehiclesCollection = _firestore
+        CollectionReference foodCollection = _firestore
             .collection('AllAdmins')
             .doc(widget.uid)
             .collection('foodItems');
 
-        // Add a new document to the "vehicles" subcollection
-        await vehiclesCollection.add({
+        await foodCollection.add({
           'name': FoodName,
           'foodCode': FoodCode,
           'price': FoodPrice,

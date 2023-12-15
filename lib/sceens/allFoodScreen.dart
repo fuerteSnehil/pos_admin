@@ -15,14 +15,9 @@ class AllFoodsScreen extends StatefulWidget {
 class _AllFoodsScreenState extends State<AllFoodsScreen> {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  Future<void> _deleteItem(String itemId) async {
+  Future<void> _deleteItem(DocumentReference docReference) async {
     try {
-      await FirebaseFirestore.instance
-          .collection('AllUsers')
-          .doc(widget.documentId)
-          .collection('foodItems')
-          .doc(itemId)
-          .delete();
+      await docReference.delete();
 
       Fluttertoast.showToast(
         msg: 'Item deleted successfully!',
@@ -70,9 +65,10 @@ class _AllFoodsScreenState extends State<AllFoodsScreen> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
-                child: CircularProgressIndicator(
-              color: primaryColor,
-            ));
+              child: CircularProgressIndicator(
+                color: primaryColor,
+              ),
+            );
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else {
@@ -83,17 +79,8 @@ class _AllFoodsScreenState extends State<AllFoodsScreen> {
 
             return ListView.builder(
               itemCount: documents.length,
-              // separatorBuilder: (BuildContext context, int index) {
-              //   return Divider(
-              //     indent: 40,
-              //     endIndent: 40,
-              //   ); // Add a divider between items
-              // },
               itemBuilder: (context, index) {
                 var data = documents[index].data() as Map<String, dynamic>;
-                String test = data['name'] ?? '';
-                print("testing data is printing");
-                print(test);
                 return FoodItemWidget(
                   imagePath: data['imagePath'] ?? '',
                   name: data['name'] ?? '',
@@ -102,7 +89,7 @@ class _AllFoodsScreenState extends State<AllFoodsScreen> {
                   department: data['department'] ?? '',
                   tax: data['tax'] ?? '',
                   onDelete: () {
-                    _deleteItem(documents[index].id);
+                    _deleteItem(documents[index].reference);
                   },
                 );
               },
@@ -139,80 +126,146 @@ class FoodItemWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
-        height: MediaQuery.of(context).size.height * .15,
+        height: MediaQuery.of(context).size.height / 6,
         decoration: BoxDecoration(
-            color: white,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              const BoxShadow(
-                blurRadius: 4.0,
-              ),
-            ]),
+          color: white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            const BoxShadow(
+              blurRadius: 4.0,
+            ),
+          ],
+        ),
         child: Row(
           children: [
-            Container(
-                decoration: const BoxDecoration(
-                  color: primaryColor,
+            Expanded(
+              flex: 2,
+              child: Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: NetworkImage(imagePath),
+                    fit: BoxFit.contain,
+                  ),
+                  color: white,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(20.0),
                     bottomLeft: Radius.circular(20.0),
                   ),
                 ),
-                height: MediaQuery.of(context).size.height * .15,
-                width: MediaQuery.of(context).size.width * .28,
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                          image: NetworkImage(imagePath), fit: BoxFit.contain)),
-                )),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
+                // height: MediaQuery.of(context).size.height * .15,
+                // width: MediaQuery.of(context).size.width * .27),
+              ),
+            ),
+            Expanded(
+              flex: 3,
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     name,
                     style: const TextStyle(
-                      fontSize: 19.0,
+                      fontSize: 17.0,
                       fontFamily: "tabfont",
                     ),
                   ),
                   Text(
-                    'Code : $foodCode',
+                    'Code: $foodCode',
                     style: const TextStyle(
-                        fontFamily: "fontmain",
-                        fontSize: 15.0,
-                        color: Colors.black54),
+                      fontFamily: "fontmain",
+                      fontSize: 15.0,
+                      color: Colors.black54,
+                    ),
                   ),
                   Text(
-                    'Price : $price',
+                    'Price: $price',
                     style: const TextStyle(
-                        fontFamily: "fontmain",
-                        fontSize: 15.0,
-                        color: Colors.black54),
+                      fontFamily: "fontmain",
+                      fontSize: 15.0,
+                      color: Colors.black54,
+                    ),
                   ),
                   Text(
-                    'Department : $department',
+                    'Department: $department',
                     style: const TextStyle(
-                        fontFamily: "fontmain",
-                        fontSize: 15.0,
-                        color: Colors.black54),
+                      fontFamily: "fontmain",
+                      fontSize: 15.0,
+                      color: Colors.black54,
+                    ),
                   ),
                   Text(
-                    'Tax : $tax',
+                    'Tax: $tax',
                     style: const TextStyle(
-                        fontFamily: "fontmain",
-                        fontSize: 15.0,
-                        color: Colors.black54),
+                      fontFamily: "fontmain",
+                      fontSize: 15.0,
+                      color: Colors.black54,
+                    ),
                   ),
                 ],
+              ),
+            ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width / 12,
+            ),
+            Expanded(
+              flex: 1,
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: primaryColor,
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(20.0),
+                    bottomRight: Radius.circular(20.0),
+                  ),
+                ),
+                height: MediaQuery.of(context).size.height / 6,
+                
+                child: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                  ),
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.delete,
+                      color: white,
+                    ),
+                    onPressed: () {
+                      _showDeleteConfirmationDialog(context);
+                    },
+                  ),
+                ),
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  // Function to show a confirmation dialog before deleting
+  void _showDeleteConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Delete Item"),
+          content: Text("Are you sure you want to delete this item?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Cancel
+              },
+              child: Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                onDelete(); // Call the onDelete function to delete the item
+              },
+              child: Text("Delete"),
+            ),
+          ],
+        );
+      },
     );
   }
 }

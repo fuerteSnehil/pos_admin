@@ -39,11 +39,13 @@ class _OverAllReportState extends State<OverAllReport> {
 
               return ListTile(
                 title: Text('Bill ${index + 1}'),
+                subtitle: Text('User ID: ${billData['userId']}'),
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => BillDetailsScreen(billData: billData),
+                      builder: (context) =>
+                          BillDetailsScreen(billData: billData),
                     ),
                   );
                 },

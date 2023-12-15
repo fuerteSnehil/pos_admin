@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pos_admin/constants/colors.dart';
 import 'package:pos_admin/sceens/allDepartmentScreen.dart';
 import 'package:pos_admin/widgets/cstmTextField.dart';
+import 'package:pos_admin/widgets/myTextField.dart';
 
 class AddUnitScreen extends StatefulWidget {
   final String docId;
@@ -47,6 +48,7 @@ class _AddDepartmentState extends State<AddUnitScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
@@ -58,33 +60,32 @@ class _AddDepartmentState extends State<AddUnitScreen> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          color: white,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Image.asset(
-                '$imagesPath/unit.gif',
-                scale: 3,
-              ),
-              CustomTextField(
-                controller: unitNameController,
-                hintText: 'Enter Unit Name',
-              ),
-              CustomTextField(
-                controller: remarkController,
-                hintText: 'Enter Remark',
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
                 children: [
+                  Image.asset(
+                    '$imagesPath/unit.gif',
+                    scale: 3,
+                  ),
+                  MyTextField(
+                    cstmLable: 'Unit Name',
+                    controller: unitNameController,
+                    hintText: 'Enter unit name here',
+                  ),
+                  MyTextField(
+                    cstmLable: 'Remark',
+                    controller: remarkController,
+                    hintText: 'Enter remark here',
+                  ),
                   GestureDetector(
                     onTap: () {
                       handleRadioValueChange(1);
                     },
                     child: Container(
-                      height: MediaQuery.of(context).size.height * .1,
+                      height: MediaQuery.of(context).size.height / 20,
                       color: Colors.white,
                       width: double.infinity,
                       child: Row(
@@ -97,7 +98,10 @@ class _AddDepartmentState extends State<AddUnitScreen> {
                           ),
                           const Text(
                             'Active',
-                            style: TextStyle(fontSize: 20),
+                            style: TextStyle(
+                                fontSize: 17,
+                                fontFamily: 'fontmain',
+                                fontWeight: FontWeight.w600),
                           ),
                         ],
                       ),
@@ -108,6 +112,7 @@ class _AddDepartmentState extends State<AddUnitScreen> {
                       handleRadioValueChange(2);
                     },
                     child: Container(
+                      height: MediaQuery.of(context).size.height / 20,
                       color: Colors.white,
                       width: double.infinity,
                       child: Row(
@@ -120,52 +125,55 @@ class _AddDepartmentState extends State<AddUnitScreen> {
                           ),
                           const Text(
                             'In-Active',
-                            style: TextStyle(fontSize: 20),
+                            style: TextStyle(
+                                fontSize: 17,
+                                fontFamily: 'fontmain',
+                                fontWeight: FontWeight.w600),
                           ),
                         ],
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: 50,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          backgroundColor: primaryColor,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'SUBMIT',
-                              style: TextStyle(
-                                fontSize: 17,
-                                color: Colors.white,
-                                letterSpacing: 1.3,
-                              ),
-                            ),
-                          ],
-                        ),
-                        onPressed: () async {
-                          // Call the function to add department
-                          await addUnits();
-                          Fluttertoast.showToast(
-                            msg: 'unit added successfully',
-                          );
-                        },
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  backgroundColor: primaryColor,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'SUBMIT',
+                      style: TextStyle(
+                        fontSize: 17,
+                        color: Colors.white,
+                        letterSpacing: 1.3,
                       ),
                     ),
-                  )
-                ],
-              )
-            ],
-          ),
-        ),
+                  ],
+                ),
+                onPressed: () async {
+                  // Call the function to add department
+                  await addUnits();
+                  Fluttertoast.showToast(
+                    msg: 'unit added successfully',
+                  );
+                },
+              ),
+            ),
+          )
+        ],
       ),
     );
   }

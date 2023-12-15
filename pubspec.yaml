@@ -30,6 +30,7 @@ dependencies:
   community_material_icon: ^5.9.55
   foundation: ^0.0.5
   url_strategy: ^0.2.0
+  flare_flutter: ^3.0.2
 
 dev_dependencies:
   flutter_test:

@@ -17,6 +17,7 @@ import 'package:pos_admin/sceens/allFoodScreen.dart';
 import 'package:pos_admin/sceens/allTaxScreen.dart';
 import 'package:pos_admin/sceens/inception.dart';
 import 'package:pos_admin/sceens/itemScreen.dart';
+import 'package:pos_admin/sceens/overAllReports.dart';
 import 'package:pos_admin/screen.dart';
 import 'package:pos_admin/widgets/circleWidget.dart';
 import 'package:pos_admin/widgets/cstmList.dart';
@@ -32,6 +33,7 @@ class AdminDashboard extends StatefulWidget {
 
 class _AdminDashboardState extends State<AdminDashboard> {
   bool showMasterSublist = false;
+  bool showReportSublist = false;
   late FirebaseFirestore _firestore;
   bool isFetched = true;
   String name = '';
@@ -83,7 +85,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
   Widget build(BuildContext context) {
     //  double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar:  AppBar(
+      appBar: AppBar(
         backgroundColor: const Color(0XFFf65656),
         centerTitle: true,
         title: const Text(
@@ -342,9 +344,31 @@ class _AdminDashboardState extends State<AdminDashboard> {
               leading: Icon(MdiIcons.file),
               title: const Text('Reports'),
               onTap: () {
-                Navigator.pop(context);
+                setState(() {
+                  showReportSublist = !showReportSublist;
+                });
               },
             ),
+            if (showReportSublist)
+              Column(
+                children: [
+                  ListTile(
+                    leading: const Icon(Icons.subdirectory_arrow_right),
+                    title: const Text('Over All Report'),
+                    onTap: () {
+                    Navigator.push(context,MaterialPageRoute(builder: (context)=>OverAllReport()));
+                     
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.subdirectory_arrow_right),
+                    title: const Text('Report Billwise'),
+                    onTap: () {
+                
+                    },
+                  ),
+                ],
+              ),
           ],
         ),
       ),

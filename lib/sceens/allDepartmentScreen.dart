@@ -1,3 +1,4 @@
+import 'package:community_material_icon/community_material_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -10,6 +11,16 @@ class DepartmentListScreen extends StatefulWidget {
 
   @override
   State<DepartmentListScreen> createState() => _DepartmentListScreenState();
+}
+
+// Function to delete a department from Firebase
+Future<void> _deleteDepartment(DocumentReference departmentReference) async {
+  try {
+    await departmentReference.delete();
+  } catch (e) {
+    // Handle errors here
+    print('Error deleting department: $e');
+  }
 }
 
 class _DepartmentListScreenState extends State<DepartmentListScreen> {
@@ -46,6 +57,8 @@ class _DepartmentListScreenState extends State<DepartmentListScreen> {
                 return DepartmentListItem(
                   name: department['name'],
                   status: department['status'],
+                  imagePath: department['imageUrl'],
+                  onDelete: () => _deleteDepartment(department.reference),
                 );
               },
             );
@@ -59,8 +72,15 @@ class _DepartmentListScreenState extends State<DepartmentListScreen> {
 class DepartmentListItem extends StatelessWidget {
   final String name;
   final String status;
+  final String imagePath;
+  final VoidCallback onDelete;
 
-  const DepartmentListItem({required this.name, required this.status, Key? key})
+  const DepartmentListItem(
+      {required this.name,
+      required this.status,
+      required this.imagePath,
+      required this.onDelete,
+      Key? key})
       : super(key: key);
 
   @override
@@ -77,48 +97,96 @@ class DepartmentListItem extends StatelessWidget {
               ),
             ]),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Container(
-              decoration: const BoxDecoration(
-                color: primaryColor,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20.0),
-                  bottomLeft: Radius.circular(20.0),
-                ),
-              ),
-              height: MediaQuery.of(context).size.height * .1,
-              width: MediaQuery.of(context).size.width * .28,
-              padding: const EdgeInsets.all(8.0),
-              child: const CircleAvatar(
-                backgroundColor: Colors.white,
-                radius: 20.0,
-                child: Icon(
-                  Icons.restaurant,
-                  size: 30,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-            SizedBox(width: 16.0),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: TextStyle(
-                    fontSize: 17,
-                    fontFamily: "tabfont",
+            Expanded(
+              flex: 2,
+              child: Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: NetworkImage(imagePath), fit: BoxFit.contain),
+                  color: white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20.0),
+                    bottomLeft: Radius.circular(20.0),
                   ),
                 ),
-                Text(
-                  status,
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                height: MediaQuery.of(context).size.height * .10,
+                width: MediaQuery.of(context).size.width * .28,
+                padding: const EdgeInsets.all(8.0),
+              ),
+            ),
+            // SizedBox(width: 16.0),
+            Expanded(
+              flex: 2,
+              child: Column(
+                children: [
+                  Text(
+                    name,
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontFamily: "tabfont",
+                    ),
+                  ),
+                  Text(
+                    status,
+                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width / 9,
+            ),
+            Expanded(
+              flex: 1,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: primaryColor,
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(20.0),
+                    bottomRight: Radius.circular(20.0),
+                  ),
                 ),
-              ],
+                height: MediaQuery.of(context).size.height * .10,
+                width: MediaQuery.of(context).size.width * .28,
+                child: IconButton(
+                    onPressed: () => _showDeleteConfirmationDialog(context),
+                    icon: Icon(
+                      CommunityMaterialIcons.delete,
+                      color: white,
+                    )),
+              ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  // Function to show a confirmation dialog before deleting
+  void _showDeleteConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Delete Department"),
+          content: Text("Are you sure you want to delete this department?"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(), // Cancel
+              child: Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                onDelete(); // Call the onDelete function to delete the department
+              },
+              child: Text("Delete"),
+            ),
+          ],
+        );
+      },
     );
   }
 }

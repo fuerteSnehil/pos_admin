@@ -5,6 +5,7 @@ import 'package:pos_admin/constants/colors.dart';
 import 'package:pos_admin/sceens/allDepartmentScreen.dart';
 import 'package:pos_admin/sceens/allTaxScreen.dart';
 import 'package:pos_admin/widgets/cstmTextField.dart';
+import 'package:pos_admin/widgets/myTextField.dart';
 
 class AddTaxScreen extends StatefulWidget {
   final String docId;
@@ -74,35 +75,40 @@ class _AddDepartmentState extends State<AddTaxScreen> {
                 '$imagesPath/tax.gif',
                 scale: 5,
               ),
-              CustomTextField(
+              MyTextField(
                 controller: TaxNameController,
-                hintText: 'Tax Name',
+                hintText: 'Enter tax name here',
+                cstmLable: 'Tax Name',
               ),
-              CustomTextField(
+              MyTextField(
                 controller: GstController,
-                hintText: 'Total GST in %',
+                hintText: 'Enter total GST in % here',
+                cstmLable: 'GST In %',
               ),
-              CustomTextField(
+              MyTextField(
+                cstmLable: 'CGST In %',
                 controller: CgstController,
-                hintText: 'CGST in %',
+                hintText: 'Enter CGST in % here',
               ),
-              CustomTextField(
+              MyTextField(
+                cstmLable: 'SGST In %',
                 controller: SgstContrller,
-                hintText: 'SGST in %',
+                hintText: 'Enter SGST in % here',
               ),
-              CustomTextField(
+              MyTextField(
+                cstmLable: 'IGST In %',
                 controller: IgstController,
-                hintText: 'IGST in %',
+                hintText: 'Enter IGST in % here',
               ),
               Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                // mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   GestureDetector(
                     onTap: () {
                       handleRadioValueChange(1);
                     },
                     child: Container(
-                      height: MediaQuery.of(context).size.height * .1,
+                      height: MediaQuery.of(context).size.height / 20,
                       color: Colors.white,
                       width: double.infinity,
                       child: Row(
@@ -115,7 +121,10 @@ class _AddDepartmentState extends State<AddTaxScreen> {
                           ),
                           const Text(
                             'Active',
-                            style: TextStyle(fontSize: 20),
+                            style: TextStyle(
+                                fontSize: 17,
+                                fontFamily: 'fontmain',
+                                fontWeight: FontWeight.w600),
                           ),
                         ],
                       ),
@@ -126,6 +135,7 @@ class _AddDepartmentState extends State<AddTaxScreen> {
                       handleRadioValueChange(2);
                     },
                     child: Container(
+                      height: MediaQuery.of(context).size.height / 20,
                       color: Colors.white,
                       width: double.infinity,
                       child: Row(
@@ -138,7 +148,10 @@ class _AddDepartmentState extends State<AddTaxScreen> {
                           ),
                           const Text(
                             'In-Active',
-                            style: TextStyle(fontSize: 20),
+                            style: TextStyle(
+                                fontSize: 17,
+                                fontFamily: 'fontmain',
+                                fontWeight: FontWeight.w600),
                           ),
                         ],
                       ),
@@ -174,6 +187,7 @@ class _AddDepartmentState extends State<AddTaxScreen> {
                           // Call the function to add department
                           await addDepartment();
                           Fluttertoast.showToast(
+                            backgroundColor: green,
                             msg: 'Tax added successfully',
                             // backgroundColor: Colors.green,
                           );

@@ -15,6 +15,21 @@ class AllCustomerScreen extends StatefulWidget {
 class _AllCustomerScreenState extends State<AllCustomerScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  // Function to delete a customer from Firebase
+  Future<void> _deleteCustomer(String customerId) async {
+    try {
+      await _firestore
+          .collection('AllAdmins')
+          .doc(widget.adminUid)
+          .collection('customer')
+          .doc(customerId)
+          .delete();
+    } catch (e) {
+      // Handle errors here
+      print('Error deleting customer: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,6 +60,7 @@ class _AllCustomerScreenState extends State<AllCustomerScreen> {
           List<Widget> customerWidgets = [];
           for (var customer in customers) {
             var customerData = customer.data() as Map<String, dynamic>;
+            var customerId = customer.id;
             var customerName = customerData['name'];
             var customerPhone = customerData['phoneNumber'];
             var customerCode = customerData['customerCode'];
@@ -55,13 +71,14 @@ class _AllCustomerScreenState extends State<AllCustomerScreen> {
               child: Container(
                 height: MediaQuery.of(context).size.width * .3,
                 decoration: BoxDecoration(
-                    color: white,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      const BoxShadow(
-                        blurRadius: 4.0,
-                      ),
-                    ]),
+                  color: white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    const BoxShadow(
+                      blurRadius: 4.0,
+                    ),
+                  ],
+                ),
                 child: Row(
                   children: [
                     Container(
@@ -82,7 +99,7 @@ class _AllCustomerScreenState extends State<AllCustomerScreen> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.only(left: 8, top: 8),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -94,14 +111,14 @@ class _AllCustomerScreenState extends State<AllCustomerScreen> {
                             ),
                           ),
                           Text(
-                            "Customer Code : $customerCode",
+                            "Customer Code: $customerCode",
                             style: const TextStyle(
                                 fontFamily: "fontmain",
                                 fontSize: 15.0,
                                 color: Colors.black54),
                           ),
                           Text(
-                            "Phone No : $customerPhone",
+                            "Phone No: $customerPhone",
                             style: const TextStyle(
                                 fontFamily: "fontmain",
                                 fontSize: 15.0,
@@ -117,6 +134,15 @@ class _AllCustomerScreenState extends State<AllCustomerScreen> {
                         ],
                       ),
                     ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.delete,
+                      ),
+                      onPressed: () {
+                        // Show a confirmation dialog before deleting
+                        _showDeleteConfirmationDialog(context, customerId);
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -131,5 +157,38 @@ class _AllCustomerScreenState extends State<AllCustomerScreen> {
         },
       ),
     );
+  }
+
+  // Function to show a confirmation dialog before deleting
+  void _showDeleteConfirmationDialog(
+      BuildContext context, String customerId) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Delete Customer"),
+          content: Text("Are you sure you want to delete this customer?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Cancel
+              },
+              child: Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context)
+                    .pop(true); // Return true when delete is confirmed
+              },
+              child: Text("Delete"),
+            ),
+          ],
+        );
+      },
+    ).then((result) {
+      if (result == true) {
+        _deleteCustomer(customerId);
+      }
+    });
   }
 }
