@@ -43,16 +43,13 @@ class MyTextField extends StatelessWidget {
             child: TextField(
               keyboardType: keyboardType,
               style: TextStyle(
-                fontSize: 17,
-                color: black,
-                fontWeight: FontWeight.w500,
-              ),
+                  fontSize: 17, letterSpacing: 1, fontWeight: FontWeight.w500),
               controller: controller,
               cursorColor: primaryColor,
               decoration: InputDecoration(
                 border: InputBorder.none,
                 contentPadding:
-                    EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                 hintText: hintText,
                 hintStyle: TextStyle(
                     fontWeight: FontWeight.w300, color: Colors.grey.shade500),

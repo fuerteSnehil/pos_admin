@@ -1,66 +1,65 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:flutter/material.dart';
 import 'package:pos_admin/constants/colors.dart';
 
-class TaxListScreen extends StatefulWidget {
-  final String docId;
-
-  const TaxListScreen({required this.docId, Key? key}) : super(key: key);
+class AllUnitScreen extends StatefulWidget {
+  final String uid;
+  const AllUnitScreen({required this.uid, super.key});
 
   @override
-  State<TaxListScreen> createState() => _DepartmentListScreenState();
+  State<AllUnitScreen> createState() => _AllUnitScreenState();
 }
 
-class _DepartmentListScreenState extends State<TaxListScreen> {
+class _AllUnitScreenState extends State<AllUnitScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        title: Text(
-          'Tax List',
-          style: TextStyle(
-            fontFamily: "tabfont",
-          ),
-        ),
-      ),
-      body: StreamBuilder(
-        stream: FirebaseFirestore.instance
-            .collection('AllAdmins')
-            .doc(widget.docId)
-            .collection('tax')
-            .orderBy('createdAt', descending: true)
-            .snapshots(),
-        builder: (context,snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
-          } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return Center(child: Text('No departments added yet.'));
-          } else {
-            return ListView.builder(
-              itemCount: snapshot.data!.docs.length,
-              itemBuilder: (context, index) {
-                var tax = snapshot.data!.docs[index];
-                return DepartmentListItem(
-                  name: tax['name'],
-                  status: tax['status'],
+        appBar: AppBar(
+            automaticallyImplyLeading: false,
+            centerTitle: true,
+            title: Text(
+              'Unit List',
+              style: TextStyle(fontFamily: 'tabfont'),
+            )),
+        body: StreamBuilder(
+            stream: FirebaseFirestore.instance
+                .collection('AllAdmins')
+                .doc(widget.uid)
+                .collection('units')
+                .orderBy('createdAt', descending: true)
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(
+                  child: CircularProgressIndicator(color: primaryColor),
                 );
-              },
-            );
-          }
-        },
-      ),
-    );
+              } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                return Center(child: Text("NO data Found"));
+              } else {
+                return ListView.builder(
+                    itemCount: snapshot.data!.docs.length,
+                    itemBuilder: (context, index) {
+                      var myData = snapshot.data!.docs[index];
+                      return UnitListItem(
+                          name: myData['name'],
+                          status: myData['status'],
+                          remark: myData['remark']);
+                    });
+              }
+            }));
   }
 }
 
-class DepartmentListItem extends StatelessWidget {
+class UnitListItem extends StatelessWidget {
   final String name;
   final String status;
+  final String remark;
 
-  const DepartmentListItem({required this.name, required this.status, Key? key})
+  const UnitListItem(
+      {required this.name,
+      required this.status,
+      required this.remark,
+      Key? key})
       : super(key: key);
 
   @override
@@ -112,6 +111,10 @@ class DepartmentListItem extends StatelessWidget {
                 ),
                 Text(
                   status,
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                ),
+                Text(
+                  remark,
                   style: TextStyle(fontSize: 16, color: Colors.grey),
                 ),
               ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pos_admin/constants/colors.dart';
 import 'package:pos_admin/sceens/allDepartmentScreen.dart';
 import 'package:pos_admin/sceens/allTaxScreen.dart';
@@ -54,152 +55,183 @@ class _AddDepartmentState extends State<AddTaxScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: primaryColor,
         automaticallyImplyLeading: false,
         centerTitle: true,
         title: Text(
           'Tax Settings',
           style: TextStyle(
+            color: white,
             fontFamily: "tabfont",
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          color: white,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Image.asset(
-                '$imagesPath/tax.gif',
-                scale: 5,
-              ),
-              MyTextField(
-                controller: TaxNameController,
-                hintText: 'Enter tax name here',
-                cstmLable: 'Tax Name',
-              ),
-              MyTextField(
-                controller: GstController,
-                hintText: 'Enter total GST in % here',
-                cstmLable: 'GST In %',
-              ),
-              MyTextField(
-                cstmLable: 'CGST In %',
-                controller: CgstController,
-                hintText: 'Enter CGST in % here',
-              ),
-              MyTextField(
-                cstmLable: 'SGST In %',
-                controller: SgstContrller,
-                hintText: 'Enter SGST in % here',
-              ),
-              MyTextField(
-                cstmLable: 'IGST In %',
-                controller: IgstController,
-                hintText: 'Enter IGST in % here',
-              ),
-              Column(
-                // mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      handleRadioValueChange(1);
-                    },
-                    child: Container(
-                      height: MediaQuery.of(context).size.height / 20,
-                      color: Colors.white,
-                      width: double.infinity,
-                      child: Row(
-                        children: [
-                          Radio(
-                            activeColor: primaryColor,
-                            value: 1,
-                            groupValue: selectedRadio,
-                            onChanged: handleRadioValueChange,
-                          ),
-                          const Text(
-                            'Active',
-                            style: TextStyle(
-                                fontSize: 17,
-                                fontFamily: 'fontmain',
-                                fontWeight: FontWeight.w600),
-                          ),
-                        ],
-                      ),
-                    ),
+      body: Column(
+        children: [
+          Stack(
+            children: <Widget>[
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(50),
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      handleRadioValueChange(2);
-                    },
-                    child: Container(
-                      height: MediaQuery.of(context).size.height / 20,
-                      color: Colors.white,
-                      width: double.infinity,
-                      child: Row(
-                        children: [
-                          Radio(
-                            activeColor: primaryColor,
-                            value: 2,
-                            groupValue: selectedRadio,
-                            onChanged: handleRadioValueChange,
-                          ),
-                          const Text(
-                            'In-Active',
-                            style: TextStyle(
-                                fontSize: 17,
-                                fontFamily: 'fontmain',
-                                fontWeight: FontWeight.w600),
-                          ),
-                        ],
-                      ),
-                    ),
+                  color: black,
+                ),
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height / 3.5,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 50),
+                  child: Image.asset(
+                    '$imagesPath/tax.gif',
+                    scale: 4,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: 50,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          backgroundColor: primaryColor,
-                        ),
+                ),
+              ), //Container
+              //Container
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(50),
+                  ),
+                  color: primaryColor,
+                ),
+                height: MediaQuery.of(context).size.height / 20,
+                width: double.infinity,
+              ), //Container
+            ], //<Widget>[]
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 4, right: 4, top: 16),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    MyTextField(
+                      controller: TaxNameController,
+                      hintText: 'Enter tax name here',
+                      cstmLable: 'Tax Name',
+                    ),
+                    MyTextField(
+                      controller: GstController,
+                      hintText: 'Enter total GST in % here',
+                      cstmLable: 'GST In %',
+                    ),
+                    MyTextField(
+                      cstmLable: 'CGST In %',
+                      controller: CgstController,
+                      hintText: 'Enter CGST in % here',
+                    ),
+                    MyTextField(
+                      cstmLable: 'SGST In %',
+                      controller: SgstContrller,
+                      hintText: 'Enter SGST in % here',
+                    ),
+                    MyTextField(
+                      cstmLable: 'IGST In %',
+                      controller: IgstController,
+                      hintText: 'Enter IGST in % here',
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        handleRadioValueChange(1);
+                      },
+                      child: Container(
+                        height: MediaQuery.of(context).size.height / 20,
+                        color: Colors.white,
+                        width: double.infinity,
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
-                              'SUBMIT',
+                            Radio(
+                              activeColor: primaryColor,
+                              value: 1,
+                              groupValue: selectedRadio,
+                              onChanged: handleRadioValueChange,
+                            ),
+                            const Text(
+                              'Active',
                               style: TextStyle(
-                                fontSize: 17,
-                                color: Colors.white,
-                                fontFamily: "tabfont",
-                                letterSpacing: 1.3,
-                              ),
+                                  fontSize: 17,
+                                  fontFamily: 'fontmain',
+                                  fontWeight: FontWeight.w600),
                             ),
                           ],
                         ),
-                        onPressed: () async {
-                          // Call the function to add department
-                          await addDepartment();
-                          Fluttertoast.showToast(
-                            backgroundColor: green,
-                            msg: 'Tax added successfully',
-                            // backgroundColor: Colors.green,
-                          );
-                        },
                       ),
                     ),
-                  )
-                ],
-              )
-            ],
+                    GestureDetector(
+                      onTap: () {
+                        handleRadioValueChange(2);
+                      },
+                      child: Container(
+                        height: MediaQuery.of(context).size.height / 20,
+                        color: Colors.white,
+                        width: double.infinity,
+                        child: Row(
+                          children: [
+                            Radio(
+                              activeColor: primaryColor,
+                              value: 2,
+                              groupValue: selectedRadio,
+                              onChanged: handleRadioValueChange,
+                            ),
+                            const Text(
+                              'In-Active',
+                              style: TextStyle(
+                                  fontSize: 17,
+                                  fontFamily: 'fontmain',
+                                  fontWeight: FontWeight.w600),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
-        ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  backgroundColor: primaryColor,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'SUBMIT',
+                      style: TextStyle(
+                        fontSize: 17,
+                        color: Colors.white,
+                        fontFamily: "tabfont",
+                        letterSpacing: 1.3,
+                      ),
+                    ),
+                  ],
+                ),
+                onPressed: () async {
+                  // Call the function to add department
+                  await addDepartment();
+                  Fluttertoast.showToast(
+                    backgroundColor: green,
+                    msg: 'Tax added successfully',
+                    // backgroundColor: Colors.green,
+                  );
+                },
+              ),
+            ),
+          )
+        ],
       ),
     );
   }

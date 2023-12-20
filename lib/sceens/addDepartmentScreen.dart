@@ -71,74 +71,103 @@ class _AddDepartmentState extends State<AddDepartmentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: primaryColor,
         automaticallyImplyLeading: false,
         centerTitle: true,
         title: Text(
           'Add Department',
           style: TextStyle(
+            color: white,
             fontFamily: "tabfont",
           ),
         ),
       ),
       body: Column(
         children: [
+          Stack(
+            children: <Widget>[
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(50),
+                  ),
+                  color: black,
+                ),
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height / 3.5,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 60),
+                  child: Column(
+                    children: [
+                      Container(
+                        height: MediaQuery.of(context).size.height * .14,
+                        width: MediaQuery.of(context).size.width * .6,
+                        child: selectedIamge != null
+                            ? Image.file(selectedIamge!)
+                            : Lottie.asset(
+                                "$lottiePath/food2.json",
+                                fit: BoxFit.fitHeight,
+                                frameRate: FrameRate(90),
+                              ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () async {
+                              pickImageFromGallery();
+                            },
+                            child: const Text(
+                              'Gallery',
+                              style: TextStyle(
+                                color: primaryColor,
+                                fontFamily: "tabfont",
+                              ),
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: () async {
+                              pickImageFromCamera();
+                            },
+                            child: const Text(
+                              'Camera',
+                              style: TextStyle(
+                                color: primaryColor,
+                                fontFamily: "tabfont",
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ), //Container
+              //Container
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(50),
+                  ),
+                  color: primaryColor,
+                ),
+                height: MediaQuery.of(context).size.height / 20,
+                width: double.infinity,
+              ), //Container
+            ], //<Widget>[]
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height / 44,
+          ),
           Expanded(
             child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Image.asset(
-                    '$imagesPath/department.gif',
-                    scale: 1.6,
-                  ),
-                  Container(
-                    height: MediaQuery.of(context).size.height * .14,
-                    width: MediaQuery.of(context).size.width * .6,
-                    child: selectedIamge != null
-                        ? Image.file(selectedIamge!)
-                        : Lottie.asset(
-                            "$lottiePath/food2.json",
-                            fit: BoxFit.fitHeight,
-                            frameRate: FrameRate(90),
-                          ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () async {
-                          pickImageFromGallery();
-                        },
-                        child: Text(
-                          'Gallery',
-                          style: TextStyle(
-                            color: primaryColor,
-                            fontFamily: "tabfont",
-                          ),
-                        ),
-                      ),
-                      ElevatedButton(
-                        onPressed: () async {
-                          pickImageFromCamera();
-                        },
-                        child: Text(
-                          'Camera',
-                          style: TextStyle(
-                            color: primaryColor,
-                            fontFamily: "tabfont",
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: MyTextField(
-                      cstmLable: "Department Name",
-                      controller: departmentNameController,
-                      hintText: 'Enter department name here',
-                    ),
+                  MyTextField(
+                    cstmLable: "Department Name",
+                    controller: departmentNameController,
+                    hintText: 'Enter department name here',
                   ),
                   GestureDetector(
                     onTap: () {

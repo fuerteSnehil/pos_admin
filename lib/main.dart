@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
 void main() async {
+
   WidgetsFlutterBinding.ensureInitialized();
       await Firebase.initializeApp(
       name: 'pos-main',

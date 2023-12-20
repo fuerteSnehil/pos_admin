@@ -50,26 +50,58 @@ class _AddDepartmentState extends State<AddUnitScreen> {
     return Scaffold(
       backgroundColor: white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: primaryColor,
         automaticallyImplyLeading: false,
         centerTitle: true,
         title: Text(
           'Add Units',
           style: TextStyle(
+            color: white,
             fontFamily: "tabfont",
           ),
         ),
       ),
       body: Column(
         children: [
+          Stack(
+            children: <Widget>[
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(50),
+                  ),
+                  color: black,
+                ),
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height / 3.5,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 25),
+                  child: Image.asset(
+                    '$imagesPath/unit.gif',
+                    scale: 3,
+                  ),
+                ),
+              ), //Container
+              //Container
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(50),
+                  ),
+                  color: primaryColor,
+                ),
+                height: MediaQuery.of(context).size.height / 20,
+                width: double.infinity,
+              ), //Container
+            ], //<Widget>[]
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height / 44,
+          ),
           Expanded(
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  Image.asset(
-                    '$imagesPath/unit.gif',
-                    scale: 3,
-                  ),
                   MyTextField(
                     cstmLable: 'Unit Name',
                     controller: unitNameController,

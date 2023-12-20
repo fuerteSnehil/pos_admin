@@ -15,6 +15,7 @@ import 'package:pos_admin/sceens/allCustomerScreen.dart';
 import 'package:pos_admin/sceens/allDepartmentScreen.dart';
 import 'package:pos_admin/sceens/allFoodScreen.dart';
 import 'package:pos_admin/sceens/allTaxScreen.dart';
+import 'package:pos_admin/sceens/allUnitScreen.dart';
 import 'package:pos_admin/sceens/inception.dart';
 import 'package:pos_admin/sceens/itemScreen.dart';
 import 'package:pos_admin/sceens/overAllReports.dart';
@@ -295,6 +296,13 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                   )));
                     },
                   ),
+                  ListTile(
+                    leading: const Icon(Icons.subdirectory_arrow_right),
+                    title: const Text('Unit List'),
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder:(context)=>AllUnitScreen(uid: widget.Uid)));
+                    },
+                  ),
                   // ListTile(
                   //   leading: Icon(Icons.subdirectory_arrow_right),
                   //   title: Text('Units'),
@@ -356,16 +364,16 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     leading: const Icon(Icons.subdirectory_arrow_right),
                     title: const Text('Over All Report'),
                     onTap: () {
-                    Navigator.push(context,MaterialPageRoute(builder: (context)=>OverAllReport()));
-                     
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => OverAllReport()));
                     },
                   ),
                   ListTile(
                     leading: const Icon(Icons.subdirectory_arrow_right),
                     title: const Text('Report Billwise'),
-                    onTap: () {
-                
-                    },
+                    onTap: () {},
                   ),
                 ],
               ),

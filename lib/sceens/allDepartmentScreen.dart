@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:community_material_icon/community_material_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -102,9 +103,17 @@ class DepartmentListItem extends StatelessWidget {
             Expanded(
               flex: 2,
               child: Container(
+                child: CachedNetworkImage(
+                  imageUrl: imagePath,
+                  placeholder: (BuildContext context, String url) => Center(
+                      child: const CircularProgressIndicator(
+                    color: primaryColor,
+                  )),
+                  errorWidget:
+                      (BuildContext context, String url, dynamic error) =>
+                          const Icon(Icons.error),
+                ),
                 decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: NetworkImage(imagePath), fit: BoxFit.contain),
                   color: white,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(20.0),

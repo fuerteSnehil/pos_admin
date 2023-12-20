@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -123,121 +124,130 @@ class FoodItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        height: MediaQuery.of(context).size.height / 6,
-        decoration: BoxDecoration(
-          color: white,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            const BoxShadow(
-              blurRadius: 4.0,
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              flex: 2,
-              child: Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(imagePath),
-                    fit: BoxFit.contain,
-                  ),
-                  color: white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20.0),
-                    bottomLeft: Radius.circular(20.0),
-                  ),
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            height: MediaQuery.of(context).size.height / 6,
+            decoration: BoxDecoration(
+              color: white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                const BoxShadow(
+                  blurRadius: 4.0,
                 ),
-                // height: MediaQuery.of(context).size.height * .15,
-                // width: MediaQuery.of(context).size.width * .27),
-              ),
+              ],
             ),
-            Expanded(
-              flex: 3,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    name,
-                    style: const TextStyle(
-                      fontSize: 17.0,
-                      fontFamily: "tabfont",
-                    ),
-                  ),
-                  Text(
-                    'Code: $foodCode',
-                    style: const TextStyle(
-                      fontFamily: "fontmain",
-                      fontSize: 15.0,
-                      color: Colors.black54,
-                    ),
-                  ),
-                  Text(
-                    'Price: $price',
-                    style: const TextStyle(
-                      fontFamily: "fontmain",
-                      fontSize: 15.0,
-                      color: Colors.black54,
-                    ),
-                  ),
-                  Text(
-                    'Department: $department',
-                    style: const TextStyle(
-                      fontFamily: "fontmain",
-                      fontSize: 15.0,
-                      color: Colors.black54,
-                    ),
-                  ),
-                  Text(
-                    'Tax: $tax',
-                    style: const TextStyle(
-                      fontFamily: "fontmain",
-                      fontSize: 15.0,
-                      color: Colors.black54,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width / 12,
-            ),
-            Expanded(
-              flex: 1,
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: primaryColor,
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(20.0),
-                    bottomRight: Radius.circular(20.0),
-                  ),
-                ),
-                height: MediaQuery.of(context).size.height / 6,
-                
-                child: Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                  ),
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.delete,
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    decoration: BoxDecoration(
                       color: white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20.0),
+                        bottomLeft: Radius.circular(20.0),
+                      ),
                     ),
-                    onPressed: () {
-                      _showDeleteConfirmationDialog(context);
-                    },
+                    child: CachedNetworkImage(
+                      imageUrl: imagePath,
+                      placeholder: (BuildContext context, String url) => Center(
+                          child: const CircularProgressIndicator(
+                        color: primaryColor,
+                      )),
+                      errorWidget:
+                          (BuildContext context, String url, dynamic error) =>
+                              const Icon(Icons.error),
+                    ),
+                    // height: MediaQuery.of(context).size.height * .15,
+                    // width: MediaQuery.of(context).size.width * .27),
                   ),
                 ),
-              ),
+                Expanded(
+                  flex: 3,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        name,
+                        style: const TextStyle(
+                          fontSize: 17.0,
+                          fontFamily: "tabfont",
+                        ),
+                      ),
+                      Text(
+                        'Code: $foodCode',
+                        style: const TextStyle(
+                          fontFamily: "fontmain",
+                          fontSize: 15.0,
+                          color: Colors.black54,
+                        ),
+                      ),
+                      Text(
+                        'Price: $price',
+                        style: const TextStyle(
+                          fontFamily: "fontmain",
+                          fontSize: 15.0,
+                          color: Colors.black54,
+                        ),
+                      ),
+                      Text(
+                        'Department: $department',
+                        style: const TextStyle(
+                          fontFamily: "fontmain",
+                          fontSize: 15.0,
+                          color: Colors.black54,
+                        ),
+                      ),
+                      Text(
+                        'Tax: $tax',
+                        style: const TextStyle(
+                          fontFamily: "fontmain",
+                          fontSize: 15.0,
+                          color: Colors.black54,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width / 12,
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: primaryColor,
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(20.0),
+                        bottomRight: Radius.circular(20.0),
+                      ),
+                    ),
+                    height: MediaQuery.of(context).size.height / 6,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.delete,
+                          color: white,
+                        ),
+                        onPressed: () {
+                          _showDeleteConfirmationDialog(context);
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
-      ),
+      ],
     );
   }
 
