@@ -5,6 +5,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:pos_admin/constants/colors.dart';
 import 'package:pos_admin/loading.dart';
 import 'package:pos_admin/screen.dart';
+import 'package:pos_admin/webScreen.dart';
 
 class Shape extends StatelessWidget {
   const Shape(
@@ -210,6 +211,73 @@ class CustomButton extends StatelessWidget {
   }
 }
 
+class CustomWebButton extends StatelessWidget {
+  final double? borderRadius;
+  final VoidCallback onTap;
+  final String label;
+  final IconData? icon;
+  final Color? backgroundColor, foregroundColor;
+  final bool isLoading;
+  const CustomWebButton({
+    Key? key,
+    required this.onTap,
+    required this.isLoading,
+    this.borderRadius,
+    required this.label,
+    this.icon,
+    this.backgroundColor,
+    this.foregroundColor,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+     WebScreen s = WebScreen(context);
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: AnimatedSwitcher(
+        reverseDuration: const Duration(milliseconds: 250),
+        duration: const Duration(milliseconds: 250),
+        child: isLoading
+            ? CPI(30 * s.customWebWidth)
+            : Card(
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(
+                    borderRadius ?? 40 * s.customWebWidth,
+                  ),
+                ),
+                margin: EdgeInsets.zero,
+                // color: backgroundColor ?? theme,
+                color: backgroundColor ?? black,
+                child: Container(
+                  width: s.infinity,
+                  padding: EdgeInsets.all(15 * s.customWebWidth),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        label,
+                        style: TextStyle(
+                          color: foregroundColor ?? white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 17 * s.customWebWidth,
+                          letterSpacing: 1,
+                        ),
+                      ),
+                      SizedBox(width: 20 * s.customWebWidth),
+                      Icon(
+                        icon ?? MdiIcons.send,
+                        color: foregroundColor ?? white,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+      ),
+    );
+  }
+}
 class BeOnTimeAnimatedText extends StatelessWidget {
   const BeOnTimeAnimatedText({
     Key? key,

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pos_admin/sceens/adminDashboard.dart';
 import 'package:pos_admin/backend/backend.dart';
 import 'package:pos_admin/backend/provider/login_provider.dart';
+import 'package:pos_admin/sceens/mainadmindashboard.dart';
 import 'package:pos_admin/sceens/setUserName.dart';
 import 'package:pos_admin/widgets/snack_bar.dart';
 
@@ -84,76 +85,93 @@ class PhoneAuthentication {
     }
   }
 
+  Future<String> _afterSendingOtp(
+    PhoneAuthCredential phoneAuthCredential,
+  ) async {
+    lp.startProcessing();
+    String result = "Login successful.";
 
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCredential(phoneAuthCredential);
 
-Future<String> _afterSendingOtp(
-  PhoneAuthCredential phoneAuthCredential,
-) async {
-  lp.startProcessing();
-  String result = "Login successful.";
+      if (userCredential.user != null) {
+        try {
+          bool isPhoneNumberRegistered =
+              await _checkIfPhoneNumberExistsInFirestore(lp.phone);
 
-  try {
-    UserCredential userCredential =
-        await FirebaseAuth.instance.signInWithCredential(phoneAuthCredential);
-
-    if (userCredential.user != null) {
-      try {
-        bool isPhoneNumberRegistered = await _checkIfPhoneNumberExistsInFirestore(lp.phone);
-
-        if (isPhoneNumberRegistered) {
-          Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(
-              builder: (context) => AdminDashboard(
-                Uid: lp.phone,
+          if (isPhoneNumberRegistered) {
+            print(lp.phone);
+            try {
+              await FirebaseFirestore.instance
+                  .collection('MainAdmin')
+                  .doc(lp.phone)
+                  .get()
+                  .then((value) {
+                if (value.exists) {
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(
+                      builder: (context) => const MainAdminDashboard(),
+                    ),
+                    (route) => false,
+                  );
+                } else {
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(
+                      builder: (context) => AdminDashboard(
+                        Uid: lp.phone,
+                      ),
+                    ),
+                    (route) => false,
+                  );
+                }
+              });
+            } catch (e) {
+              print(e);
+            }
+          } else {
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(
+                builder: (context) => SetNameScreen(
+                  phoneNumber: lp.phone,
+                  verificationID: lp.verificationID,
+                ),
               ),
-            ),
-            (route) => false,
-          );
-        } else {
-          Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(
-              builder: (context) => SetNameScreen(
-                phoneNumber: lp.phone,
-                verificationID: lp.verificationID,
-              ),
-            ),
-            (route) => false,
-          );
+              (route) => false,
+            );
+          }
+        } catch (e) {
+          result = "Something went wrong!";
+          debugPrint(e.toString());
         }
-      } catch (e) {
-        result = "Something went wrong!";
-        debugPrint(e.toString());
+      }
+    } catch (e) {
+      // Check if the account already exists
+      if (e is FirebaseAuthException &&
+          e.code == 'account-exists-with-different-credential') {
+        result = "Account already exists.";
+      } else {
+        result = "Something went wrong.";
       }
     }
-  } catch (e) {
-    // Check if the account already exists
-    if (e is FirebaseAuthException && e.code == 'account-exists-with-different-credential') {
-      result = "Account already exists.";
-    } else {
-      result = "Something went wrong.";
+
+    lp.endProcessing();
+    return result;
+  }
+
+  Future<bool> _checkIfPhoneNumberExistsInFirestore(String phoneNumber) async {
+    try {
+      DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
+          .collection('AllAdmins')
+          .doc(phoneNumber) // Assuming document ID is the phone number
+          .get();
+
+      return docSnapshot.exists;
+    } catch (e) {
+      debugPrint("Error checking phone number in Firestore: $e");
+      return false;
     }
   }
-
-  lp.endProcessing();
-  return result;
-}
-
-Future<bool> _checkIfPhoneNumberExistsInFirestore(String phoneNumber) async {
-  try {
-    DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
-        .collection('AllAdmins')
-        .doc(phoneNumber) // Assuming document ID is the phone number
-        .get();
-
-    return docSnapshot.exists;
-  } catch (e) {
-    debugPrint("Error checking phone number in Firestore: $e");
-    return false;
-  }
-}
-
-
-
 
 // Function to set the user's login status to true in SharedPreferences
   Future<void> _setUserLoggedIn() async {

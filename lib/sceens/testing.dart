@@ -1,79 +1,59 @@
-// import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
-// class YourOverallReportScreen extends StatelessWidget {
-//   // ... (your existing code)
+class YourWidget extends StatefulWidget {
+  final String uid;
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         automaticallyImplyLeading: false,
-//         centerTitle: true,
-//         title: Text('Overall Report', style: TextStyle(fontFamily: 'tabfont')),
-//       ),
-//       body: Column(
-//         children: [
-//           // ... (your existing Lottie widget)
+  YourWidget({required this.uid});
 
-//           Expanded(
-//             child: StreamBuilder<QuerySnapshot>(
-//               stream: billsCollection.snapshots(),
-//               builder: (context, snapshot) {
-//                 if (snapshot.connectionState == ConnectionState.waiting) {
-//                   return Center(child: CircularProgressIndicator());
-//                 }
+  @override
+  _YourWidgetState createState() => _YourWidgetState();
+}
 
-//                 if (snapshot.hasError) {
-//                   return Text('Error: ${snapshot.error}');
-//                 }
+class _YourWidgetState extends State<YourWidget> {
+  late FirebaseFirestore _firestore;
 
-//                 if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-//                   return Text('No data available');
-//                 }
+  @override
+  void initState() {
+    super.initState();
+    _firestore = FirebaseFirestore.instance;
+    _fetchAdminData();
+  }
 
-//                 return ListView.builder(
-//                   itemCount: snapshot.data!.docs.length,
-//                   itemBuilder: (context, index) {
-//                     var billData = snapshot.data!.docs[index];
+  Future<void> _fetchAdminData() async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+          await _firestore.collection('AllAdmin').doc(widget.uid).get();
 
-//                     // Use RichText to style different parts of the text
-//                     return ListTile(
-//                       title: Text('Bill ${index + 1}'),
-//                       subtitle: RichText(
-//                         text: TextSpan(
-//                           text: 'User ID: ',
-//                           style: TextStyle(
-//                             color: Colors.black,
-//                             fontWeight: FontWeight.bold,
-//                           ),
-//                           children: <TextSpan>[
-//                             TextSpan(
-//                               text: '${billData['userId']}',
-//                               style: TextStyle(
-//                                 color: Colors.blue, // Customize the color
-//                                 fontWeight: FontWeight.normal,
-//                               ),
-//                             ),
-//                           ],
-//                         ),
-//                       ),
-//                       onTap: () {
-//                         Navigator.push(
-//                           context,
-//                           MaterialPageRoute(
-//                             builder: (context) =>
-//                                 BillDetailsScreen(billData: billData),
-//                           ),
-//                         );
-//                       },
-//                     );
-//                   },
-//                 );
-//               },
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
+      if (documentSnapshot.exists) {
+        Map<String, dynamic> data = documentSnapshot.data()!;
+
+        // Assuming your document structure has 'name', 'email', and 'phone' fields
+        String name = data['name'];
+        String email = data['email'];
+        String phone = data['phone'];
+
+        // Now you can display the fetched data in your UI or use it as needed
+        print('Name: $name');
+        print('Email: $email');
+        print('Phone: $phone');
+      } else {
+        print('Document does not exist');
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Your Widget'),
+      ),
+      body: Center(
+        child: Text('Display your data here'),
+      ),
+    );
+  }
+}

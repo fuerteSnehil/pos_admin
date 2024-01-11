@@ -188,7 +188,15 @@ class _BillDetailsScreenState extends State<BillDetailsScreen> {
                                     color: white,
                                     fontFamily: "fontmain",
                                   ),
-                                )
+                                ),
+                                Text(
+                                  'Receipt No: ${widget.billData['receiptNo']}',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: white,
+                                    fontFamily: "fontmain",
+                                  ),
+                                ),
                               ],
                             ),
                           )

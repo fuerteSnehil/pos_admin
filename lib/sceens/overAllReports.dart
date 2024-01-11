@@ -67,7 +67,7 @@ class _OverAllReportState extends State<OverAllReport> {
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream:
-                  FirebaseFirestore.instance.collection('Bills').snapshots(),
+                  FirebaseFirestore.instance.collection('AllBills').snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(
@@ -173,7 +173,7 @@ class _OverAllReportState extends State<OverAllReport> {
                                                 style: TextStyle(
                                                   color: black,
                                                   fontFamily:
-                                                      'fontmain', // Customize the color
+                                                      'fontmain', 
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),

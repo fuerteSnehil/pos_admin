@@ -78,7 +78,7 @@ const mainAppColor = Color.fromARGB(255, 114, 143, 158);
 
 const realmeWidth = 423;
 const realmeHeight = 941;
-
+const webWidth = 1040;
 
 const iconsPath = "assets/icons";
 const lottiePath = "assets/lottie";

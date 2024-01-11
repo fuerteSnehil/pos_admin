@@ -8,21 +8,28 @@ import 'package:pos_admin/sceens/inception.dart';
 import 'package:pos_admin/sceens/splash_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:url_strategy/url_strategy.dart';
+//import 'dart:html' as html;
 
-void main() async {
-
+Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-      await Firebase.initializeApp(
-      name: 'pos-main',
-      options: FirebaseOptions(
-        apiKey: "AIzaSyCnPCE-N8H4J_Bw-NTtPeb3n2rXxxua8SA",
-        projectId: "mypos-management",
-        messagingSenderId: "772150199713",
-        appId: "1:772150199713:web:517bd7f39ca12dc39af7e0")
-        );
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-  ]);
+  if (kIsWeb) {
+    await Firebase.initializeApp(
+      options: const FirebaseOptions(
+          apiKey: "AIzaSyCnPCE-N8H4J_Bw-NTtPeb3n2rXxxua8SA",
+          authDomain: "mypos-management.firebaseapp.com",
+          projectId: "mypos-management",
+          storageBucket: "mypos-management.appspot.com",
+          messagingSenderId: "772150199713",
+          appId: "1:772150199713:web:517bd7f39ca12dc39af7e0",
+          measurementId: "G-PT3E3EEQSH"),
+    );
+    setPathUrlStrategy();
+  } else {
+    await Firebase.initializeApp();
+  }
+
   runApp(MyApp());
 }
 

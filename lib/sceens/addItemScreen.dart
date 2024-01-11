@@ -2,22 +2,21 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-
+import 'package:msh_checkbox/msh_checkbox.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:msh_checkbox/msh_checkbox.dart';
-
+import 'package:file_picker/file_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pos_admin/constants/colors.dart';
+import 'package:pos_admin/sceens/addCustomerScreen.dart';
 import 'package:pos_admin/sceens/allFoodScreen.dart';
-import 'package:pos_admin/screen.dart';
-import 'package:pos_admin/widgets/checkBox.dart';
+import 'package:pos_admin/sceens/demo.dart';
 import 'package:pos_admin/widgets/dropDown.dart';
-import 'package:pos_admin/widgets/myTextField.dart';
 import 'package:pos_admin/widgets/utils.dart';
 
 class AddItemScreen extends StatefulWidget {
@@ -150,35 +149,32 @@ class _AddItemScreenState extends State<AddItemScreen> {
     }
   }
 
+  Uint8List webImage = Uint8List(8);
+  String selectfile = '';
+  String selectfile1 = '';
+  Future _pickImage() async {
+// ignore: unused_local_variable
+    FilePickerResult? fileResult = await FilePicker.platform.pickFiles();
+    if (fileResult != null) {
+      setState(() {
+        selectfile = fileResult.files.first.name;
+        webImage = fileResult.files.first.bytes!;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async {
-        // Clear the text fields when back button is pressed
-        foodNameController.clear();
-        foodCodeController.clear();
-        foodPriceController.clear();
-        return true;
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: primaryColor,
-          automaticallyImplyLeading: false,
-          centerTitle: true,
-          title: const Text(
-            'Add Food Items',
-            style: TextStyle(
-              color: white,
-              fontFamily: "tabfont",
-            ),
-          ),
-        ),
-        body: isLoading
-            ? const Center(
-                child: CircularProgressIndicator(
-                color: primaryColor,
-              ))
-            : Column(
+        onWillPop: () async {
+          // Clear the text fields when back button is pressed
+          foodNameController.clear();
+          foodCodeController.clear();
+          foodPriceController.clear();
+          return true;
+        },
+        child: MediaQuery.of(context).size.width < 600
+            ? Column(
                 children: [
                   Stack(
                     children: <Widget>[
@@ -587,9 +583,239 @@ class _AddItemScreenState extends State<AddItemScreen> {
                     ),
                   ),
                 ],
-              ),
-      ),
-    );
+              )
+            : ListView(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width -
+                        MediaQuery.of(context).size.width / 6,
+                    height: 55,
+                    //color: Colors.red,
+                    child: const Center(
+                      child: Text(
+                        'Add Items Detail here',
+                        style: TextStyle(
+                            fontFamily: 'tabfont',
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 23),
+                      ),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        // height: MediaQuery.of(context).size.height - 70,
+                        // width: MediaQuery.of(context).size.width / 1.3,
+                        color: Color(0XFFeeeeee),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width / 5,
+                                ),
+                                Container(
+                                  height: 200,
+                                  width: 300,
+                                  child: selectfile.isEmpty
+                                      ? Lottie.asset(
+                                          "$lottiePath/food2.json",
+                                          fit: BoxFit.fitHeight,
+                                          frameRate: FrameRate(90),
+                                        )
+                                      : Image.memory(
+                                          webImage,
+                                          fit: BoxFit.cover,
+                                        ),
+                                ),
+                              ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 19, horizontal: 34),
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    width:
+                                        MediaQuery.of(context).size.width / 4,
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      _pickImage();
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 9, vertical: 5),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(4),
+                                        color: const Color(0XFFac3749),
+                                      ),
+                                      child: const Text(
+                                        'Select Image',
+                                        style: TextStyle(
+                                            fontFamily: 'tabfont',
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 41),
+                              child: Row(
+                                children: [
+                                  info("Item Name", "Enter name here", context,
+                                      foodNameController),
+                                  SizedBox(
+                                    width: 19,
+                                  ),
+                                  info("Item code", "enter code here", context,
+                                      foodCodeController),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 41),
+                              child: Row(
+                                children: [
+                                  info("Item Price", "Enter price here",
+                                      context, foodPriceController),
+                                  SizedBox(
+                                    width: 19,
+                                  ),
+                                  info("Description", "enter deskfkjds here",
+                                      context, foodDescriptionController),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 41),
+                              child: Row(
+                                children: [
+                                  info("Stock", "Enter tax here", context,
+                                      foodStockController),
+                                  SizedBox(
+                                    width: 19,
+                                  ),
+                                  info("units", "enter units here", context,
+                                      foodNameController),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 41),
+                              child: Row(
+                                children: [
+                                  info("Category", "Enter tax here", context,
+                                      foodStockController),
+                                  SizedBox(
+                                    width: 19,
+                                  ),
+                                  info("tax", "enter units here", context,
+                                      foodNameController),
+                                ],
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 47, vertical: 25),
+                                  child: Container(
+                                    height: 52,
+                                    width:
+                                        MediaQuery.of(context).size.width / 3.5,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(7),
+                                        color: const Color(0XFFac3749)),
+                                    child: MaterialButton(
+                                      onPressed: () {
+                                        final String FoodName =
+                                            foodNameController.text;
+                                        final String FoodCode =
+                                            foodCodeController.text;
+                                        final String FoodPrice =
+                                            foodPriceController.text;
+                                        final String Stocks =
+                                            foodStockController.text;
+                                        final String Description =
+                                            foodDescriptionController.text;
+                                        final bool IsHot = isChecked;
+
+                                        if (isUploading) {
+                                          return; // If already uploading, do nothing
+                                        }
+
+                                        setState(() {
+                                          isUploading =
+                                              true; // Set uploading state to true
+                                        });
+
+                                        createSubcollection(
+                                          context,
+                                          FoodName,
+                                          FoodCode,
+                                          FoodPrice,
+                                          Stocks,
+                                          Description,
+                                          IsHot,
+                                          widget.uid,
+                                        ).then((_) {
+                                          // After data is uploaded, set uploading state to false
+                                          setState(() {
+                                            isUploading = false;
+                                            isLoading = false;
+                                          });
+                                        });
+                                      },
+                                      height: 38,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(0)),
+                                      child: const Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 30, vertical: 8),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              'Add Item',
+                                              style: TextStyle(
+                                                  fontFamily: 'tabfont',
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ));
   }
 
   Future pickImageFromGallery() async {
@@ -621,7 +847,11 @@ class _AddItemScreenState extends State<AddItemScreen> {
     bool IsHot,
     String phoneNo,
   ) async {
-    if (FoodName.isEmpty || FoodCode.isEmpty || FoodPrice.isEmpty) {
+    if (FoodName.isEmpty &&
+        FoodCode.isEmpty &&
+        FoodPrice.isEmpty &&
+        FoodStock.isEmpty &&
+        foodDescription.isEmpty) {
       showSnackBar(context, "Please provide all details");
       return;
     }
@@ -630,14 +860,16 @@ class _AddItemScreenState extends State<AddItemScreen> {
       User? user = _auth.currentUser;
 
       if (user != null) {
-        // final String uid = user.uid;
+        final String uid = user.uid;
         String imagePath = await uploadImageToStorage(selectedIamge);
-        CollectionReference foodCollection = _firestore
+        // Create a subcollection named "vehicles" inside the user's document
+        CollectionReference vehiclesCollection = _firestore
             .collection('AllAdmins')
             .doc(widget.uid)
             .collection('foodItems');
 
-        await foodCollection.add({
+        // Add a new document to the "vehicles" subcollection
+        await vehiclesCollection.add({
           'name': FoodName,
           'foodCode': FoodCode,
           'price': FoodPrice,
@@ -660,8 +892,6 @@ class _AddItemScreenState extends State<AddItemScreen> {
         foodNameController.clear();
         foodCodeController.clear();
         foodPriceController.clear();
-        foodDescriptionController.clear();
-        foodStockController.clear();
         setState(() {
           isLoading = true;
         });
