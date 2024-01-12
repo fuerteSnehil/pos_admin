@@ -339,27 +339,36 @@ class _AddDepartmentState extends State<AddDepartmentScreen> {
                             ),
                           ],
                         ),
-                        const SizedBox(
-                          height: 26,
-                        ),
-                        InkWell(
-                          onTap: () {
-                            _pickImage();
-                          },
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 9, vertical: 5),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(4),
-                              color: const Color(0XFFac3749),
-                            ),
-                            child: const Text(
-                              'Select Image',
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white),
-                            ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 19, horizontal: 34),
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width / 4,
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  _pickImage();
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 9, vertical: 5),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(4),
+                                    color: const Color(0XFFac3749),
+                                  ),
+                                  child: const Text(
+                                    'Select Image',
+                                    style: TextStyle(
+                                        fontFamily: 'tabfont',
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         SizedBox(
